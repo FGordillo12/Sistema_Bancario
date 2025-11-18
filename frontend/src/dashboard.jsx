@@ -4,7 +4,7 @@ function Dashboard({ user, onLogout }) {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2>Bienvenido, {user.email}</h2>
+        <h2>Bienvenido, {user?.correo}</h2>
         <button onClick={onLogout}>Cerrar Sesión</button>
       </div>
       

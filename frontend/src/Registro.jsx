@@ -1,10 +1,14 @@
 import React from 'react'
 import '../CSS/Registro.css';
+import { useNavigate } from "react-router-dom";
+
 const Registro = () => {
     const [nombre, setNombre] = React.useState("");
     const [correo, setCorreo] = React.useState("");
     const [contraseña, setContraseña] = React.useState("");
     const [mensaje, setMensaje] = React.useState("");
+
+    const navigate = useNavigate();  // redirigir después del login exitoso
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -19,6 +23,10 @@ const Registro = () => {
 
         const data = await respuesta.json();
         setTimeout(()=>setMensaje(data.mensaje),3000);
+        if (respuesta.ok) {
+          // Redirigir al dashboard u otra página después del login exitoso
+          navigate("/login");
+        }
     };
   return (
     <main className='contenedor-principal'>

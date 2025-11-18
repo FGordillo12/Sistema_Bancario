@@ -1,9 +1,12 @@
 import React from 'react'
+import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ onLogin }) => {
   const [Correo, setCorreo] = React.useState('');
   const [Contraseña, setContraseña] = React.useState('');
   const [mensaje, setMensaje] = React.useState('');
+
+  const navigate = useNavigate();  // redirigir después del login exitoso
 
   const handleSubmit = async (e) => {
         e.preventDefault();
@@ -22,6 +25,11 @@ const Login = () => {
 
         const data = await respuesta.json();
         setMensaje(data.message || "Login exitoso");
+
+        if (respuesta.ok && data.usuario) {
+            onLogin(data.usuario);
+            navigate("/dashboard");
+        }
 
         // Limpia campos
         setCorreo("");

@@ -21,7 +21,12 @@ router.post("/login", async (req, res) => {
     }
 
     // 3. Login ok
-    res.json({ message: "Inicio de sesión exitoso" });
+    res.json({ message: "Inicio de sesión exitoso", 
+        usuario: {
+            correo: user.correo
+        }
+    });
+    
 
   } catch (error) {
     console.error("Error en login:", error);
