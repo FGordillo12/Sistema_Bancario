@@ -1,8 +1,10 @@
+/*Diseño de login y registro*/
+
 .formulario {
-    background-color: #FFFFFF;
+    background-color: none;
   padding: 20px;
   border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
   max-width: 400px;
   margin: auto;
 
