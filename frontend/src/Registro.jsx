@@ -18,7 +18,7 @@ const Registro = () => {
         });
 
         const data = await respuesta.json();
-        setMensaje(data.mensaje);
+        setTimeout(()=>setMensaje(data.mensaje),3000);
     };
   return (
     <main className='contenedor-principal'>
