@@ -16,6 +16,9 @@ connectDB();
 
 // Importa las rutas
 import rutasUsuarios from "./routes/Usuario.js";
+import rutasLogin from "./routes/Login_usuario.js";
+
+app.use("/apis", rutasLogin);
 app.use("/api", rutasUsuarios);
 
 app.listen(3000, () => {
