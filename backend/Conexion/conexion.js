@@ -5,7 +5,7 @@ dotenv.config();
 
 async function connectDB() {
   try {
-    await mongoose.connect("mongodb+srv://SanCode:bo289G5MecjqSQsr@cluster0.tsmwijl.mongodb.net/?appName=Cluster0", {
+    await mongoose.connect(process.env.MONGO_URL, {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });
