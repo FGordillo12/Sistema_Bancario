@@ -5,8 +5,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Rutas
-import rutasUsuarios from "./routes/Usuario.js";
-import rutasLogin from "./routes/Login_usuario.js";
+import rutasUsuarios from "./routes/route.usuario.js";
+import rutasLogin from "./routes/route.login.js";
 import rutasVerify2FA from "./routes/verify2fa.js";
 
 const app = express();
@@ -28,7 +28,7 @@ connectDB();
 // Usar rutas
 app.use("/apis", rutasLogin); // login + 2FA inicio
 app.use("/api", rutasUsuarios); // usuarios
-app.use("/api/verify-2fa", rutasVerify2FA); // verificación de código 2FA
+app.use("/api/verify-2fa", rutasVerify2FA); // verificacion de codigo 2FA
 
 // Iniciar servidor
 app.listen(3000, () => {
