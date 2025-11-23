@@ -22,13 +22,13 @@
 }
 
 .caja_principal {
-    max-width: 800px;
     margin: 20px auto;
     padding: 20px;
     display: flex;
     background-color: white;
     border-radius: 8px;
     align-items: center;
+    justify-content: center;
 
 }
 
@@ -36,32 +36,30 @@
     padding: 60px 20px;
     text-align: center;
     background-color: white;
+    width: 100%;
 }
 .modulos h1 {
     font-size: 2.5em;
     margin-bottom: 40px;
-    margin-top: -20px;
+    margin-top: -40px;
     color: black;
     font-family: 'Times New Roman', Times, serif;;
 }
 
 .modulos_contenido {
     display: flex;
+    justify-content: center; 
     justify-content: center;
-    align-items: flex-start;
-    gap: 80px;  /* separación entre tarjetas */
-    margin-top: 40px;
+    align-items: stretch;
+    flex-wrap: wrap;              
+    gap: 30px;                    
+    max-width: 1200px;            
+    margin: 0 auto;               
 }
 
-.boton_cliente{
-    border: none;
-    padding: 15px 30px;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-.crear_cliente{
-    width: 340px;
+.contenido{
+    width: 300px;             
+    max-width: 100%;
     background-color: #f3f3f3;
     padding: 30px;
     border-radius: 20px;
@@ -70,49 +68,19 @@
     transition: transform 0.3s ease;
 }
 
-.crear_cliente h2 {
+.contenido h2 {
     font-size: 28px;
     font-weight: bold;
 }
 
-.crear_cliente img{
-    width: 180px;
-    height: auto;
-    margin-bottom: 20px;
-}
-
-.boton_productos{
-    border: none;
-    padding: 15px 30px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 18px;
-}
-
-.productos_bancarios{
-    width: 340px;
-    background-color: #f3f3f3;
-    padding: 30px;
-    border-radius: 20px;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
-}
-
-.productos_bancarios h2 {
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.productos_bancarios img{
+.contenido img{
     width: 180px;
     height: auto;
     margin-bottom: 20px;
 }
 
 
-
-.crear_cliente:hover, .productos_bancarios:hover {
+.contenido:hover{
     background-color: #e0e0e0; /* Fondo gris claro */
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     transform: translateY(-2px);

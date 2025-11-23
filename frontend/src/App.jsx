@@ -6,6 +6,9 @@ import PaginaPrincipal from './PaginaPrincipal.jsx'
 import Cuenta from './cuenta.jsx'
 import Productos from './Productos_cliente.jsx'
 import DashboardCliente from './dashboardCliente.jsx'
+import VerificarSaldo from './estadoCuenta.jsx'
+import Consignaciones from './consignaciones.jsx'
+import Retiros from './retiros.jsx'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -47,6 +50,10 @@ function App() {
         <Route path ="/crear_cliente" element =  {<Cuenta/>}/>
         <Route path ="/productos_cliente" element =  {<Productos/>}/>
         <Route path ="/dashboardCliente" element =  {<DashboardCliente/>}/>
+        <Route path='/verificarSaldo' element = {<VerificarSaldo/>}/>
+        <Route path='/consignaciones' element = {<Consignaciones/>}/>
+        <Route path='/retiros' element = {<Retiros/>}/>
+
       </Routes>
     </Router>
   )

@@ -20,12 +20,12 @@ function Dashboard({ user, onLogout }) {
         <section className='modulos'>
           <h1>FUNCIONALIDADES ADMINISTRADOR</h1>
           <div className='modulos_contenido'> 
-              <div className='crear_cliente' onClick={() => navigate('/crear_cliente')}>
+              <div className='contenido' onClick={() => navigate('/crear_cliente')}>
                 <img src = "/IMAGENES/nuevo-usuario.png"/>
                 <h2>Crear Cliente</h2>
               </div>
 
-              <div className='productos_bancarios' onClick={ () => navigate ('/productos_cliente')}>
+              <div className='contenido' onClick={ () => navigate ('/productos_cliente')}>
                 <img src = "/IMAGENES/dinero.png"/>
                 <h2>Productos bancarios</h2>
               </div>
