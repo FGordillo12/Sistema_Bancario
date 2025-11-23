@@ -6,6 +6,7 @@ const usuarioSchema = new mongoose.Schema({
   contraseña: { type: String, required: true },
   twoFactorCode: { type: String, default: null },
   twoFactorExpires: { type: Date, default: null },
+  rol: { type: String, default: "admin" } // "cliente" | "admin"
 });
 
 export default mongoose.model("Usuarios", usuarioSchema);

@@ -67,6 +67,7 @@ router.post("/", async (req, res) => {
     return res.json({
       message: "Autenticación exitosa",
       token: jwtToken,
+      rol: usuario.rol
     });
   } catch (error) {
     console.error("Error en verify-2fa:", error);

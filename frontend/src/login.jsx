@@ -24,6 +24,12 @@ const Login = ({ onLogin }) => {
 
         const data = await respuesta.json();
 
+        if (data.rol === "admin") {
+            navigate("/dashboard");
+        } else if (data.rol === "cliente") {
+            navigate("/dashboardCliente");
+        }
+
         if (respuesta.ok && data.requires2FA) {
           setRequires2FA(true);
           setMensaje("Se envió un código a tu correo");

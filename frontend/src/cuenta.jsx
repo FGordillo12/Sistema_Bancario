@@ -22,7 +22,7 @@ function Cuenta() {
         setContraseña("");
       }
 
-      setMensaje(data.msg);    
+      setMensaje(data.mensaje);    
       setTimeout(() => setMensaje(""), 3000);   
 
     };

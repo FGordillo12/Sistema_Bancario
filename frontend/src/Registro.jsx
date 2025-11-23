@@ -21,8 +21,10 @@ const Registro = () => {
         body: JSON.stringify(datos)
         });
 
-        setMensaje(data.msg);    
-        setTimeout(() => setMensaje(""), 3000);  
+        const data = await respuesta.json();
+        setMensaje(data.mensaje || data.error);  
+        setTimeout(() => setMensaje(""), 3000);
+
         if (respuesta.ok) {
           // Redirigir al dashboard u otra página después del login exitoso
           navigate("/login");
