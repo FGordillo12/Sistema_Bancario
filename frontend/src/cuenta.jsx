@@ -22,8 +22,9 @@ function Cuenta() {
         setContraseña("");
       }
 
-      setMensaje(data.mensaje);    
-      setTimeout(() => setMensaje(""), 3000);   
+      const data = await respuesta.json();
+      setMensaje(data.mensaje || data.error);  
+      setTimeout(() => setMensaje(""), 3000);  
 
     };
 
