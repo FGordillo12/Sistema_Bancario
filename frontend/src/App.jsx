@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Login from './Login.jsx'
 import Dashboard from './dashboard.jsx'
 import Registro from './Registro.jsx'
@@ -14,13 +14,23 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 function App() {
   const [user, setUser] = useState(null);
 
-  const handleLogin = (usuario) => {
-    setUser(usuario);  // guardamos el usuario recibido desde Login
-  };
+  useEffect(() => {
+    const usuarioGuardado = localStorage.getItem('user');
+    if (usuarioGuardado) {
+        setUser(JSON.parse(usuarioGuardado));
+      }
+    }, []);
 
+
+  const handleLogin = (usuario) => {
+    setUser(usuario);
+    localStorage.setItem('user', JSON.stringify(usuario));
+  };
   const handleLogout = () => {
     setUser(null);
+    localStorage.removeItem('user');
   };
+
 
   return (
     <Router>
@@ -46,10 +56,29 @@ function App() {
           } 
         />
 
+        <Route 
+          path="/login" 
+          element={<Login onLogin={handleLogin} />} 
+        />
+
+        {/* Protegemos Dashboard con user */}
+        <Route 
+          path="/dashboardCliente" 
+          element={
+            user && user.correo ? (
+                <DashboardCliente user={user} onLogout={handleLogout} />
+            ) : (
+                <h2>No estás autenticado</h2>
+            )
+
+          } 
+        />
+
+
+
         <Route path="/registro" element={<Registro />} />
         <Route path ="/crear_cliente" element =  {<Cuenta/>}/>
         <Route path ="/productos_cliente" element =  {<Productos/>}/>
-        <Route path ="/dashboardCliente" element =  {<DashboardCliente/>}/>
         <Route path='/verificarSaldo' element = {<VerificarSaldo/>}/>
         <Route path='/consignaciones' element = {<Consignaciones/>}/>
         <Route path='/retiros' element = {<Retiros/>}/>

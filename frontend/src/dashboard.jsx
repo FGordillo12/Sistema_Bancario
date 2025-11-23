@@ -5,6 +5,12 @@ import { useNavigate } from 'react-router-dom';
 
 function Dashboard({ user, onLogout }) {
   const navigate = useNavigate();
+
+  const cerrarSesion = () => {
+    onLogout();      // limpia el usuario
+    navigate("/");   // redirige a la ruta que quieras
+  };
+
   return (
     <div>
       <header>
@@ -12,7 +18,7 @@ function Dashboard({ user, onLogout }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <h2>Bienvenido {user?.correo}</h2>
             </div>
-            <button className= 'cerrarsesion'>Cerrar Sesión</button>
+            <button className= 'cerrarsesion' onClick={cerrarSesion}>Cerrar Sesión</button>
         </nav>
       </header>
       
