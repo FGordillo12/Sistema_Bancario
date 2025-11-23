@@ -7,4 +7,4 @@ const clienteSchema = new mongoose.Schema({
   rol: { type: String, default: "cliente" } // "cliente" | "admin"
 });
 
-export default mongoose.model("Cliente", clienteSchema);
+export default mongoose.model("Usuarios", clienteSchema);

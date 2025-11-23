@@ -5,7 +5,7 @@ import Registro from './Registro.jsx'
 import PaginaPrincipal from './PaginaPrincipal.jsx'
 import Cuenta from './cuenta.jsx'
 import Productos from './Productos_cliente.jsx'
-import dashboardCliente from './dashboardCliente.jsx'
+import DashboardCliente from './dashboardCliente.jsx'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -46,7 +46,7 @@ function App() {
         <Route path="/registro" element={<Registro />} />
         <Route path ="/crear_cliente" element =  {<Cuenta/>}/>
         <Route path ="/productos_cliente" element =  {<Productos/>}/>
-        <Route path ="/dashboardCliente" element =  {<dashboardCliente/>}/>
+        <Route path ="/dashboardCliente" element =  {<DashboardCliente/>}/>
       </Routes>
     </Router>
   )

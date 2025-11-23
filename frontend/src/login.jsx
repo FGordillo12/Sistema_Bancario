@@ -24,18 +24,18 @@ const Login = ({ onLogin }) => {
 
         const data = await respuesta.json();
 
-        if (data.rol === "admin") {
-            navigate("/dashboard");
-        } else if (data.rol === "cliente") {
-            navigate("/dashboardCliente");
-        }
+      
 
         if (respuesta.ok && data.requires2FA) {
           setRequires2FA(true);
           setMensaje("Se envió un código a tu correo");
         } else if (respuesta.ok && data.usuario) {
           onLogin(data.usuario);
-          navigate("/dashboard");
+          if (data.rol === "admin") {
+            navigate("/dashboard");
+          } else if (data.rol === "cliente") {
+              navigate("/dashboardCliente");
+          }
         } else {
           setMensaje(data.message || "Error en login");
         }
@@ -62,7 +62,11 @@ const Login = ({ onLogin }) => {
 
         setMensaje("Login completo!");
         onLogin({ correo: Correo, token: data.token });
-        navigate("/dashboard");
+        if (data.rol === "admin") {
+            navigate("/dashboard");
+        } else if (data.rol === "cliente") {
+            navigate("/dashboardCliente");
+        }
       } catch (error) {
         console.error("Error en fetch verify-2fa:", error);
         setMensaje("Error de conexión al servidor");
