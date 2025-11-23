@@ -25,7 +25,7 @@ function Dashboard({ user, onLogout }) {
                 <h2>Crear Cliente</h2>
               </div>
 
-              <div className='productos_bancarios'>
+              <div className='productos_bancarios' onClick={ () => navigate ('/productos_cliente')}>
                 <img src = "/IMAGENES/dinero.png"/>
                 <h2>Productos bancarios</h2>
               </div>
