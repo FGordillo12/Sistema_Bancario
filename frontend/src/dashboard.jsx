@@ -1,23 +1,39 @@
 import React from 'react'
+import '../CSS/dashboard.css'
+import { useNavigate } from 'react-router-dom';
+
 
 function Dashboard({ user, onLogout }) {
+  const navigate = useNavigate();
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2>Bienvenido, {user?.correo}</h2>
-        <button onClick={onLogout}>Cerrar Sesión</button>
-      </div>
+      <header>
+        <nav className='encabezado'>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <h2>Bienvenido {user?.correo}</h2>
+            </div>
+            <button className= 'cerrarsesion'>Cerrar Sesión</button>
+        </nav>
+      </header>
       
-      <div style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '5px' }}>
-        <h3>Dashboard del Sistema Bancario</h3>
-        <p>Aquí irán las funciones del banco:</p>
-        <ul>
-          <li>Crear Cuentas</li>
-          <li>Realizar Transacciones</li>
-          <li>Consultar Estado de Cuenta</li>
-        </ul>
-        <p><strong>Para la prueba del login </strong> Usa cualquier correo y contraseña, luego ingresa el codigo 123456</p>
-      </div>
+      <main className='caja_principal'>
+        <section className='modulos'>
+          <h1>FUNCIONALIDADES ADMINISTRADOR</h1>
+          <div className='modulos_contenido'> 
+              <div className='crear_cliente' onClick={() => navigate('/crear_cliente')}>
+                <img src = "/IMAGENES/nuevo-usuario.png"/>
+                <h2>Crear Cliente</h2>
+              </div>
+
+              <div className='productos_bancarios'>
+                <img src = "/IMAGENES/dinero.png"/>
+                <h2>Productos bancarios</h2>
+              </div>
+          </div>
+          
+        </section>
+        
+      </main>
     </div>
   )
 }

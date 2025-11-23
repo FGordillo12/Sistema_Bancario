@@ -3,6 +3,7 @@ import Login from './Login.jsx'
 import Dashboard from './dashboard.jsx'
 import Registro from './Registro.jsx'
 import PaginaPrincipal from './PaginaPrincipal.jsx'
+import Cuenta from './cuenta.jsx'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
         />
 
         <Route path="/registro" element={<Registro />} />
+        <Route path ="/crear_cliente" element =  {<Cuenta/>}/>
       </Routes>
     </Router>
   )
