@@ -2,7 +2,6 @@ import React from 'react'
 import '../CSS/dashboard.css'
 import { useNavigate } from 'react-router-dom';
 
-
 function Dashboard({ user, onLogout }) {
   const navigate = useNavigate();
 
@@ -38,6 +37,11 @@ function Dashboard({ user, onLogout }) {
               <div className='contenido' onClick={ () => navigate ('/verificarSaldo')}>
                 <img src = "/IMAGENES/aprobar-banca.png"/>
                 <h2>Verificar Saldo</h2>
+              </div>
+
+              <div className='contenido' onClick={ () => navigate ('/recargarSaldo')}>
+                <img src = "/IMAGENES/recargar-saldo.png"/>
+                <h2>Recargar Saldo</h2>
               </div>
           </div>
           

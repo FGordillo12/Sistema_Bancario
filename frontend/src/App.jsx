@@ -10,6 +10,7 @@ import VerificarSaldo from './estadoCuenta.jsx'
 import Consignaciones from './consignaciones.jsx'
 import Retiros from './retiros.jsx'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import RecargarSaldo from './recargarSaldo.jsx'
 
 function App() {
   const [user, setUser] = useState(null);
@@ -82,6 +83,7 @@ function App() {
         <Route path='/verificarSaldo' element = {<VerificarSaldo/>}/>
         <Route path='/consignaciones' element = {<Consignaciones/>}/>
         <Route path='/retiros' element = {<Retiros/>}/>
+        <Route path='/recargarSaldo' element = {<RecargarSaldo/>}/>
 
       </Routes>
     </Router>

@@ -7,7 +7,6 @@ function Consignaciones() {
   const [datosConsignacion, setDatosConsignacion] = useState({
     numeroCuenta: '',
     monto: '',
-    tipoCuenta: 'ahorros',
     concepto: ''
   })
 
@@ -27,7 +26,6 @@ function Consignaciones() {
     setDatosConsignacion({
       numeroCuenta: '',
       monto: '',
-      tipoCuenta: 'ahorros',
       concepto: ''
     })
   }
@@ -60,21 +58,6 @@ function Consignaciones() {
               required
               className="form-input"
             />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">
-              Tipo de Cuenta:
-            </label>
-            <select
-              name="tipoCuenta"
-              value={datosConsignacion.tipoCuenta}
-              onChange={handleChange}
-              className="form-select"
-            >
-              <option value="ahorros">Cuenta de Ahorros</option>
-              <option value="corriente">Cuenta Corriente</option>
-            </select>
           </div>
 
           <div className="form-group">
@@ -130,7 +113,7 @@ function Consignaciones() {
         <ul className="info-list">
           <li>Las consignaciones se procesan inmediatamente</li>
           <li>Verifique bien el numero de cuenta destino</li>
-          <li>Monto minimo de consignacion: $1.000</li>
+          <li>Monto mínimo de consignacion: $1.000</li>
           <li>Horario de procesamiento: 24/7</li>
         </ul>
       </div>
