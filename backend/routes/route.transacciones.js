@@ -3,7 +3,103 @@ import Usuarios from '../Models/usuario.js';
 
 const router = express.Router();
 
-// Ruta de prueba GET
+console.log('🔄 Router de transacciones cargado correctamente');
+
+// ==================== RUTAS DE DEBUG ====================
+router.get('/debug-routes', (req, res) => {
+  const routes = [];
+  router.stack.forEach(layer => {
+    if (layer.route) {
+      const methods = Object.keys(layer.route.methods).map(method => method.toUpperCase());
+      routes.push({
+        path: layer.route.path,
+        methods: methods
+      });
+    }
+  });
+  
+  console.log('📋 Rutas registradas:');
+  routes.forEach(route => {
+    console.log(`   ${route.methods.join(', ')} ${route.path}`);
+  });
+  
+  res.json({ 
+    message: 'Rutas disponibles',
+    total: routes.length,
+    routes: routes 
+  });
+});
+
+// ==================== RUTAS DE CUENTAS ====================
+router.get('/ver-cuentas', async (req, res) => {
+  try {
+    const todasCuentas = await Usuarios.find({ numeroCuenta: { $exists: true } }, 'correo numeroCuenta saldo');
+    
+    console.log('📋 Cuentas existentes:');
+    todasCuentas.forEach(cuenta => {
+      console.log(`   - ${cuenta.numeroCuenta} (${cuenta.correo}) - Saldo: $${cuenta.saldo}`);
+    });
+    
+    res.json({
+      total: todasCuentas.length,
+      cuentas: todasCuentas.map(c => ({ 
+        correo: c.correo, 
+        numeroCuenta: c.numeroCuenta, 
+        saldo: c.saldo 
+      }))
+    });
+  } catch (error) {
+    console.error('❌ Error obteniendo cuentas:', error);
+    res.status(500).json({ message: 'Error obteniendo cuentas', error: error.message });
+  }
+});
+
+// Ruta GET temporal para asignar cuentas
+router.get('/asignar-cuentas-get', async (req, res) => {
+  try {
+    console.log('🔄 Asignando números de cuenta a usuarios...');
+    
+    const usuariosSinCuenta = await Usuarios.find({ 
+      numeroCuenta: { $exists: false } 
+    });
+    
+    console.log(`👥 Usuarios sin cuenta: ${usuariosSinCuenta.length}`);
+    
+    for (const usuario of usuariosSinCuenta) {
+      const numeroCuenta = generarNumeroCuenta();
+      usuario.numeroCuenta = numeroCuenta;
+      await usuario.save();
+      console.log(`✅ Asignada cuenta ${numeroCuenta} a ${usuario.correo}`);
+    }
+    
+    const todasCuentas = await Usuarios.find({ numeroCuenta: { $exists: true } }, 'correo numeroCuenta saldo');
+    console.log('📋 Todas las cuentas después de asignar:');
+    todasCuentas.forEach(cuenta => {
+      console.log(`   - ${cuenta.numeroCuenta} (${cuenta.correo}) - Saldo: $${cuenta.saldo}`);
+    });
+    
+    res.json({
+      success: true,
+      message: `Números de cuenta asignados a ${usuariosSinCuenta.length} usuarios`,
+      cuentas: todasCuentas.map(c => ({ correo: c.correo, cuenta: c.numeroCuenta, saldo: c.saldo }))
+    });
+    
+  } catch (error) {
+    console.error('❌ Error asignando cuentas:', error);
+    res.status(500).json({ message: 'Error asignando cuentas', error: error.message });
+  }
+});
+
+function generarNumeroCuenta() {
+  const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let resultado = '';
+  for (let i = 0; i < 8; i++) {
+    resultado += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+  }
+  return resultado;
+}
+
+// ==================== RUTAS PRINCIPALES ====================
 router.get('/test', (req, res) => {
   res.json({ message: '✅ Ruta de transacciones funcionando correctamente' });
 });
@@ -11,8 +107,6 @@ router.get('/test', (req, res) => {
 // Recargar saldo
 router.post('/recargar-saldo', async (req, res) => {
   try {
-    console.log('📥 Body recibido:', req.body);
-    
     const { userId, monto, metodoPago, concepto } = req.body;
     
     if (!userId || !monto) {
@@ -26,15 +120,9 @@ router.post('/recargar-saldo', async (req, res) => {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    console.log('👤 Usuario encontrado:', usuario.correo);
-    console.log('💰 Saldo actual:', usuario.saldo);
-    console.log('💵 Monto a recargar:', monto);
-
-    // Actualizar saldo
     const montoNumero = parseFloat(monto);
     usuario.saldo += montoNumero;
     
-    // Registrar transacción
     usuario.transacciones.push({
       tipo: 'recarga',
       monto: montoNumero,
@@ -44,8 +132,6 @@ router.post('/recargar-saldo', async (req, res) => {
     });
 
     await usuario.save();
-
-    console.log('✅ Saldo actualizado:', usuario.saldo);
 
     res.json({ 
       success: true, 
@@ -61,7 +147,7 @@ router.post('/recargar-saldo', async (req, res) => {
   }
 });
 
-// Obtener saldo actual del usuario
+// Obtener saldo actual del usuario (ACTUALIZADA para incluir numeroCuenta)
 router.get('/saldo/:userId', async (req, res) => {
   try {
     const usuario = await Usuarios.findById(req.params.userId);
@@ -70,7 +156,8 @@ router.get('/saldo/:userId', async (req, res) => {
     }
     res.json({ 
       saldo: usuario.saldo,
-      correo: usuario.correo 
+      correo: usuario.correo,
+      numeroCuenta: usuario.numeroCuenta // ← INCLUIR NUMERO DE CUENTA
     });
   } catch (error) {
     res.status(500).json({ message: 'Error obteniendo saldo', error: error.message });
@@ -89,7 +176,6 @@ router.get('/transacciones/:userId', async (req, res) => {
 
     let transacciones = usuario.transacciones;
 
-    // Aplicar filtros de fecha si están presentes
     if (fechaInicio || fechaFin) {
       transacciones = transacciones.filter(transaccion => {
         const fechaTransaccion = new Date(transaccion.fecha);
@@ -102,7 +188,7 @@ router.get('/transacciones/:userId', async (req, res) => {
 
         if (fechaFin) {
           const fin = new Date(fechaFin);
-          fin.setHours(23, 59, 59, 999); // Incluir todo el día
+          fin.setHours(23, 59, 59, 999);
           cumpleFiltro = cumpleFiltro && fechaTransaccion <= fin;
         }
 
@@ -122,7 +208,6 @@ router.get('/transacciones/:userId', async (req, res) => {
   }
 });
 
-
 // Retirar saldo
 router.post('/retirar-saldo', async (req, res) => {
   try {
@@ -133,15 +218,12 @@ router.post('/retirar-saldo', async (req, res) => {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    // Verificar saldo suficiente
     if (usuario.saldo < parseFloat(monto)) {
       return res.status(400).json({ message: 'Saldo insuficiente' });
     }
 
-    // Actualizar saldo
     usuario.saldo -= parseFloat(monto);
     
-    // Registrar transacción
     usuario.transacciones.push({
       tipo: 'retiro',
       monto: parseFloat(monto),
@@ -161,43 +243,59 @@ router.post('/retirar-saldo', async (req, res) => {
   }
 });
 
-// Consignar a otra cuenta
+// Consignar a otra cuenta - VERSIÓN SIMPLIFICADA
 router.post('/consignar', async (req, res) => {
   try {
+    console.log('🎯 RUTA /CONSIGNAR EJECUTADA');
+    console.log('📥 Datos recibidos:', req.body);
+    
     const { userId, cuentaDestino, monto, concepto } = req.body;
     
+    const cuentaDestinoLimpia = cuentaDestino.trim().toUpperCase();
+    console.log('🔍 Buscando cuenta destino:', cuentaDestinoLimpia);
+
     const usuarioOrigen = await Usuarios.findById(userId);
-    const usuarioDestino = await Usuarios.findOne({ numeroCuenta: cuentaDestino });
+    const usuarioDestino = await Usuarios.findOne({ 
+      numeroCuenta: { $regex: new RegExp(`^${cuentaDestinoLimpia}$`, 'i') }
+    });
 
     if (!usuarioOrigen) {
       return res.status(404).json({ message: 'Usuario origen no encontrado' });
     }
 
     if (!usuarioDestino) {
+      console.log('❌ Cuenta destino no encontrada');
+      const todasCuentas = await Usuarios.find({ numeroCuenta: { $exists: true } }, 'numeroCuenta correo');
+      console.log('📋 Cuentas disponibles:');
+      todasCuentas.forEach(cuenta => {
+        console.log(`   - ${cuenta.numeroCuenta} (${cuenta.correo})`);
+      });
       return res.status(404).json({ message: 'Cuenta destino no encontrada' });
     }
 
-    // Verificar saldo suficiente
-    if (usuarioOrigen.saldo < parseFloat(monto)) {
+    const montoNumerico = parseFloat(monto);
+    if (usuarioOrigen.saldo < montoNumerico) {
       return res.status(400).json({ message: 'Saldo insuficiente' });
     }
 
-    // Actualizar saldos
-    usuarioOrigen.saldo -= parseFloat(monto);
-    usuarioDestino.saldo += parseFloat(monto);
+    if (montoNumerico < 1000) {
+      return res.status(400).json({ message: 'Monto mínimo de consignación es $1,000' });
+    }
+
+    usuarioOrigen.saldo -= montoNumerico;
+    usuarioDestino.saldo += montoNumerico;
     
-    // Registrar transacciones
     usuarioOrigen.transacciones.push({
       tipo: 'consignacion_envio',
-      monto: -parseFloat(monto),
-      concepto,
-      cuentaDestino,
+      monto: -montoNumerico,
+      concepto: concepto || 'Consignación',
+      cuentaDestino: usuarioDestino.numeroCuenta,
       fecha: new Date()
     });
 
     usuarioDestino.transacciones.push({
       tipo: 'consignacion_recibo',
-      monto: parseFloat(monto),
+      monto: montoNumerico,
       concepto: `Consignación de ${usuarioOrigen.correo}`,
       cuentaOrigen: usuarioOrigen.numeroCuenta,
       fecha: new Date()
@@ -206,12 +304,17 @@ router.post('/consignar', async (req, res) => {
     await usuarioOrigen.save();
     await usuarioDestino.save();
 
+    console.log('✅ Consignación exitosa');
+    console.log(`   Origen: ${usuarioOrigen.correo} - Nuevo saldo: $${usuarioOrigen.saldo}`);
+    console.log(`   Destino: ${usuarioDestino.correo} - Nuevo saldo: $${usuarioDestino.saldo}`);
+
     res.json({ 
       success: true, 
       nuevoSaldo: usuarioOrigen.saldo,
       message: 'Consignación realizada exitosamente' 
     });
   } catch (error) {
+    console.error('❌ Error en consignación:', error);
     res.status(500).json({ message: 'Error en la consignación', error: error.message });
   }
 });

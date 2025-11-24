@@ -10,16 +10,24 @@ function EstadoCuenta({ user, saldoGlobal }) {
   const [fechaInicio, setFechaInicio] = useState('')
   const [fechaFin, setFechaFin] = useState('')
   const [cargando, setCargando] = useState(true)
+  const [error, setError] = useState(null)
 
   // Obtener transacciones reales del usuario
   useEffect(() => {
     const obtenerTransacciones = async () => {
       try {
         setCargando(true)
-        const response = await axios.get(`http://localhost:3000/api/transacciones/transacciones/${user._id}`)
+        setError(null)
+        
+        // OBTENER EL NÚMERO DE CUENTA REAL DEL USUARIO PRIMERO
+        const usuarioResponse = await axios.get(`http://localhost:3000/api/transacciones/saldo/${user._id}`)
+        console.log('📊 Datos del usuario:', usuarioResponse.data)
+        
+        // Obtener transacciones
+        const transaccionesResponse = await axios.get(`http://localhost:3000/api/transacciones/transacciones/${user._id}`)
         
         // Ordenar transacciones por fecha (más recientes primero)
-        const transaccionesOrdenadas = response.data.transacciones.sort((a, b) => 
+        const transaccionesOrdenadas = transaccionesResponse.data.transacciones.sort((a, b) => 
           new Date(b.fecha) - new Date(a.fecha)
         )
         
@@ -27,21 +35,25 @@ function EstadoCuenta({ user, saldoGlobal }) {
         
         // Configurar cuenta con datos reales
         setCuenta({
-          numero: user._id.slice(-8).toUpperCase(), 
+          numero: usuarioResponse.data.numeroCuenta || 'No asignado',
           saldo: saldoGlobal,
           moneda: 'COP',
-          fechaApertura: '2024-01-01' 
+          fechaApertura: '2024-01-01',
+          correo: usuarioResponse.data.correo
         })
         
       } catch (error) {
-        console.error('Error obteniendo transacciones:', error)
-        // En caso de error, mostrar datos vacíos
+        console.error('Error obteniendo datos:', error)
+        setError('Error al cargar los datos de la cuenta')
+        
+        // En caso de error, mostrar datos básicos
         setMovimientos([])
         setCuenta({
-          numero: user._id.slice(-8).toUpperCase(),
+          numero: 'No disponible',
           saldo: saldoGlobal,
           moneda: 'COP',
-          fechaApertura: '2024-01-01'
+          fechaApertura: '2024-01-01',
+          correo: user.correo
         })
       } finally {
         setCargando(false)
@@ -51,7 +63,7 @@ function EstadoCuenta({ user, saldoGlobal }) {
     if (user?._id) {
       obtenerTransacciones()
     }
-  }, [user?._id, saldoGlobal])
+  }, [user?._id, saldoGlobal, user?.correo])
 
   const volverAlDashboard = () => {
     navigate('/dashboardCliente')
@@ -159,13 +171,30 @@ function EstadoCuenta({ user, saldoGlobal }) {
         <h1 className="estado-cuenta-title">Estado de Cuenta</h1>
       </header>
 
+      {/* Mensaje de error */}
+      {error && (
+        <div className="error-message">
+          ⚠️ {error}
+        </div>
+      )}
+
       {/* Información de la Cuenta */}
       {cuenta && (
         <div className="info-cuenta">
           <div className="info-grid">
             <div className="info-item">
               <span className="info-label">Numero de Cuenta:</span>
-              <span className="info-value">{cuenta.numero}</span>
+              <span className="info-value" style={{ 
+                fontWeight: 'bold', 
+                color: cuenta.numero === 'No asignado' ? '#dc3545' : '#28a745' 
+              }}>
+                {cuenta.numero}
+                {cuenta.numero === 'No asignado' && (
+                  <small style={{ display: 'block', color: '#6c757d', fontSize: '0.8em' }}>
+                    (Contacta al administrador para asignar un numero de cuenta)
+                  </small>
+                )}
+              </span>
             </div>
             <div className="info-item">
               <span className="info-label">Saldo Disponible:</span>
@@ -176,14 +205,14 @@ function EstadoCuenta({ user, saldoGlobal }) {
               <span className="info-value">{cuenta.moneda}</span>
             </div>
             <div className="info-item">
-              <span className="info-label">Fecha de Apertura:</span>
-              <span className="info-value">{formatDate(cuenta.fechaApertura)}</span>
+              <span className="info-label">Titular:</span>
+              <span className="info-value">{cuenta.correo}</span>
             </div>
           </div>
         </div>
       )}
 
-      {/* Filtros por Fecha */}
+      {/* Resto del código se mantiene igual */}
       <div className="filtros-container">
         <h3 className="filtros-title">Filtrar por Fecha</h3>
         <form onSubmit={handleFiltrar} className="filtros-form">
@@ -224,7 +253,7 @@ function EstadoCuenta({ user, saldoGlobal }) {
       {/* Tabla de Movimientos */}
       <div className="movimientos-container">
         <h3 className="movimientos-title">
-          {cargando ? 'Cargando movimientos...' : 'Últimos Movimientos'}
+          {cargando ? 'Cargando movimientos...' : 'Ultimos Movimientos'}
         </h3>
         <div className="movimientos-table-container">
           {movimientos.length === 0 ? (
@@ -259,7 +288,6 @@ function EstadoCuenta({ user, saldoGlobal }) {
                       {movimiento.monto > 0 ? '+' : ''}{formatCurrency(movimiento.monto)}
                     </td>
                     <td className="saldo">
-                      {/* Nota: El saldo por transacción no está disponible en el modelo actual */}
                       {formatCurrency(saldoGlobal)}
                     </td>
                   </tr>

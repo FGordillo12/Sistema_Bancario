@@ -41,12 +41,17 @@ function Consignaciones({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
     setCargando(true)
     
     try {
+      // Limpiar y normalizar el número de cuenta
+      const cuentaDestinoLimpia = datosConsignacion.numeroCuenta.trim().toUpperCase();
+      
       const requestData = {
         userId: user._id.toString(),
-        cuentaDestino: datosConsignacion.numeroCuenta,
+        cuentaDestino: cuentaDestinoLimpia, // ← Enviar limpio y en mayúsculas
         monto: montoNumerico,
         concepto: datosConsignacion.concepto || 'Consignación'
       };
+
+      console.log('📤 Enviando datos al backend:', requestData);
 
       const response = await axios.post(
         'http://localhost:3000/api/transacciones/consignar', 
@@ -56,10 +61,11 @@ function Consignaciones({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
       if (response.data.success) {
         // ✅ Actualizar el saldo global en App.jsx
         actualizarSaldo(response.data.nuevoSaldo);
-        alert(`✅ Consignación exitosa a la cuenta ${datosConsignacion.numeroCuenta}! Nuevo saldo: $${response.data.nuevoSaldo.toLocaleString()}`)
+        alert(`✅ Consignación exitosa a la cuenta ${cuentaDestinoLimpia}! Nuevo saldo: $${response.data.nuevoSaldo.toLocaleString()}`)
         setDatosConsignacion({ numeroCuenta: '', monto: '', concepto: '' })
       }
     } catch (error) {
+      console.error('❌ Error en consignación:', error);
       alert(`❌ Error: ${error.response?.data?.message || error.message}`);
     } finally {
       setCargando(false)
@@ -168,6 +174,7 @@ function Consignaciones({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
           <li>Verifique bien el numero de cuenta destino</li>
           <li>Monto minimo de consignacion: $1.000</li>
           <li>Monto maximo por transaccion: $10'000.000</li>
+          <li>No se permiten consignaciones a la propia cuenta</li>
         </ul>
       </div>
     </div>
