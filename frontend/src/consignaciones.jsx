@@ -1,8 +1,140 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import "../CSS/Modulo_Consignaciones.css";
 
 function Consignaciones() {
+  const navigate = useNavigate()
+  const [datosConsignacion, setDatosConsignacion] = useState({
+    numeroCuenta: '',
+    monto: '',
+    tipoCuenta: 'ahorros',
+    concepto: ''
+  })
+
+  const handleChange = (e) => {
+    setDatosConsignacion({
+      ...datosConsignacion,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    console.log('Datos de consignación:', datosConsignacion)
+    alert(`Consignación de $${datosConsignacion.monto} a la cuenta ${datosConsignacion.numeroCuenta} realizada con éxito`)
+    
+    // Limpiar formulario
+    setDatosConsignacion({
+      numeroCuenta: '',
+      monto: '',
+      tipoCuenta: 'ahorros',
+      concepto: ''
+    })
+  }
+
+  const volverAlDashboard = () => {
+    navigate('/dashboardCliente')
+  }
+
   return (
-    <h1>Consignaciones cliente</h1>
+    <div className="consignaciones-container">
+      <header className="consignaciones-header">
+        <button className="volver-button" onClick={volverAlDashboard}>
+          Volver al Dashboard
+        </button>
+        <h1 className="consignaciones-title">Consignaciones</h1>
+      </header>
+      
+      <div className="consignaciones-form-container">
+        <form onSubmit={handleSubmit} className="consignaciones-form">
+          <div className="form-group">
+            <label className="form-label">
+              Número de Cuenta Destino:
+            </label>
+            <input
+              type="text"
+              name="numeroCuenta"
+              value={datosConsignacion.numeroCuenta}
+              onChange={handleChange}
+              placeholder="Ingrese el número de cuenta"
+              required
+              className="form-input"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">
+              Tipo de Cuenta:
+            </label>
+            <select
+              name="tipoCuenta"
+              value={datosConsignacion.tipoCuenta}
+              onChange={handleChange}
+              className="form-select"
+            >
+              <option value="ahorros">Cuenta de Ahorros</option>
+              <option value="corriente">Cuenta Corriente</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">
+              Monto a Consignar:
+            </label>
+            <input
+              type="number"
+              name="monto"
+              value={datosConsignacion.monto}
+              onChange={handleChange}
+              placeholder="Ingrese el monto"
+              required
+              min="1"
+              className="form-input"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">
+              Concepto:
+            </label>
+            <textarea
+              name="concepto"
+              value={datosConsignacion.concepto}
+              onChange={handleChange}
+              placeholder="Descripción de la consignación"
+              rows="3"
+              className="form-textarea"
+            />
+          </div>
+
+          <div className="form-buttons">
+            <button
+              type="button"
+              className="cancelar-button"
+              onClick={volverAlDashboard}
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              className="consignaciones-button"
+            >
+              Realizar Consignación
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div className="consignaciones-info">
+        <h3 className="info-title">Información Importante:</h3>
+        <ul className="info-list">
+          <li>Las consignaciones se procesan inmediatamente</li>
+          <li>Verifique bien el número de cuenta destino</li>
+          <li>Monto mínimo de consignación: $1.000</li>
+          <li>Horario de procesamiento: 24/7</li>
+        </ul>
+      </div>
+    </div>
   )
 }
 
