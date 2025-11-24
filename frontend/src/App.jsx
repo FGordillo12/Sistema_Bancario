@@ -6,7 +6,7 @@ import PaginaPrincipal from './PaginaPrincipal.jsx'
 import Cuenta from './cuenta.jsx'
 import Productos from './Productos_cliente.jsx'
 import DashboardCliente from './dashboardCliente.jsx'
-import VerificarSaldo from './estadoCuenta.jsx'
+import EstadoCuenta from './estadoCuenta.jsx' // ✅ Cambiado de VerificarSaldo a EstadoCuenta
 import Consignaciones from './consignaciones.jsx'
 import Retiros from './retiros.jsx'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
@@ -102,9 +102,12 @@ function App() {
         <Route path ="/crear_cliente" element =  {<Cuenta/>}/>
         <Route path ="/productos_cliente" element =  {<Productos/>}/>
         
-        {/* PASAMOS SALDO GLOBAL Y FUNCIÓN PARA ACTUALIZAR */}
+        {/* ✅ CORREGIDO: Usar EstadoCuenta en lugar de VerificarSaldo */}
         <Route path='/verificarSaldo' element = {
-          user ? <VerificarSaldo user={user} /> : <h2>No estas autenticado</h2>
+          user ? <EstadoCuenta 
+            user={user} 
+            saldoGlobal={saldoGlobal}
+          /> : <h2>No estás autenticado</h2>
         }/>
         <Route path='/consignaciones' element = {
           user ? <Consignaciones 
@@ -112,7 +115,7 @@ function App() {
             saldoGlobal={saldoGlobal}
             actualizarSaldo={actualizarSaldoGlobal}
             cargandoSaldo={cargandoSaldo}
-          /> : <h2>No estas autenticado</h2>
+          /> : <h2>No estás autenticado</h2>
         }/>
         <Route path='/retiros' element = {
           user ? <Retiros 
@@ -120,7 +123,7 @@ function App() {
             saldoGlobal={saldoGlobal}
             actualizarSaldo={actualizarSaldoGlobal}
             cargandoSaldo={cargandoSaldo}
-          /> : <h2>No estas autenticado</h2>
+          /> : <h2>No estás autenticado</h2>
         }/>
         <Route path='/recargarSaldo' element = {
           user ? <RecargarSaldo 
@@ -128,7 +131,7 @@ function App() {
             saldoGlobal={saldoGlobal}
             actualizarSaldo={actualizarSaldoGlobal}
             cargandoSaldo={cargandoSaldo}
-          /> : <h2>No estas autenticado</h2>
+          /> : <h2>No estás autenticado</h2>
         }/>
 
       </Routes>

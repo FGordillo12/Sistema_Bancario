@@ -77,7 +77,50 @@ router.get('/saldo/:userId', async (req, res) => {
   }
 });
 
+// Obtener transacciones del usuario
+router.get('/transacciones/:userId', async (req, res) => {
+  try {
+    const { fechaInicio, fechaFin } = req.query;
+    const usuario = await Usuarios.findById(req.params.userId);
+    
+    if (!usuario) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
 
+    let transacciones = usuario.transacciones;
+
+    // Aplicar filtros de fecha si están presentes
+    if (fechaInicio || fechaFin) {
+      transacciones = transacciones.filter(transaccion => {
+        const fechaTransaccion = new Date(transaccion.fecha);
+        let cumpleFiltro = true;
+
+        if (fechaInicio) {
+          const inicio = new Date(fechaInicio);
+          cumpleFiltro = cumpleFiltro && fechaTransaccion >= inicio;
+        }
+
+        if (fechaFin) {
+          const fin = new Date(fechaFin);
+          fin.setHours(23, 59, 59, 999); // Incluir todo el día
+          cumpleFiltro = cumpleFiltro && fechaTransaccion <= fin;
+        }
+
+        return cumpleFiltro;
+      });
+    }
+
+    res.json({ 
+      transacciones,
+      total: transacciones.length
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      message: 'Error obteniendo transacciones', 
+      error: error.message 
+    });
+  }
+});
 
 
 // Retirar saldo

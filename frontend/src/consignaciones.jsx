@@ -168,8 +168,6 @@ function Consignaciones({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
           <li>Verifique bien el numero de cuenta destino</li>
           <li>Monto minimo de consignacion: $1.000</li>
           <li>Monto maximo por transaccion: $10'000.000</li>
-          <li>Horario de procesamiento: 24/7</li>
-          <li>Se requiere saldo suficiente en su cuenta</li>
         </ul>
       </div>
     </div>
