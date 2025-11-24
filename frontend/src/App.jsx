@@ -53,16 +53,10 @@ function App() {
             ) : (
                 <h2>No estás autenticado</h2>
             )
-
           } 
         />
 
-        <Route 
-          path="/login" 
-          element={<Login onLogin={handleLogin} />} 
-        />
-
-        {/* Protegemos Dashboard con user */}
+        {/* Protegemos DashboardCliente con user */}
         <Route 
           path="/dashboardCliente" 
           element={
@@ -71,19 +65,26 @@ function App() {
             ) : (
                 <h2>No estás autenticado</h2>
             )
-
           } 
         />
-
-
 
         <Route path="/registro" element={<Registro />} />
         <Route path ="/crear_cliente" element =  {<Cuenta/>}/>
         <Route path ="/productos_cliente" element =  {<Productos/>}/>
-        <Route path='/verificarSaldo' element = {<VerificarSaldo/>}/>
-        <Route path='/consignaciones' element = {<Consignaciones/>}/>
-        <Route path='/retiros' element = {<Retiros/>}/>
-        <Route path='/recargarSaldo' element = {<RecargarSaldo/>}/>
+        
+        {/* PASAMOS USER COMO PROP A LAS TRANSACCIONES */}
+        <Route path='/verificarSaldo' element = {
+          user ? <VerificarSaldo user={user} /> : <h2>No estas autenticado</h2>
+        }/>
+        <Route path='/consignaciones' element = {
+          user ? <Consignaciones user={user} /> : <h2>No estas autenticado</h2>
+        }/>
+        <Route path='/retiros' element = {
+          user ? <Retiros user={user} /> : <h2>No estas autenticado</h2>
+        }/>
+        <Route path='/recargarSaldo' element = {
+          user ? <RecargarSaldo user={user} /> : <h2>No estas autenticado</h2>
+        }/>
 
       </Routes>
     </Router>

@@ -232,3 +232,39 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+/* Estilos para el saldo actual */
+.saldo-actual {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 180px;
+}
+
+.saldo-label {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 5px;
+}
+
+.saldo-monto {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Ajustar el header para el saldo */
+.recargar-saldo-header,
+.retiros-header,
+.consignaciones-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e0e0e0;
+  flex-wrap: wrap;
+  gap: 15px;
+}

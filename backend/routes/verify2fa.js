@@ -64,10 +64,17 @@ router.post("/", async (req, res) => {
 
     console.log("2FA verificado correctamente para:", email);
 
+    // ✅ CORREGIDO: Devolver el usuario completo
     return res.json({
       message: "Autenticación exitosa",
       token: jwtToken,
-      rol: usuario.rol
+      rol: usuario.rol,
+      user: {  // ← ESTO ES LO QUE FALTABA
+        _id: usuario._id,
+        correo: usuario.correo,
+        nombre: usuario.nombre,
+        rol: usuario.rol
+      }
     });
   } catch (error) {
     console.error("Error en verify-2fa:", error);

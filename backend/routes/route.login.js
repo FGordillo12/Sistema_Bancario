@@ -38,10 +38,16 @@ router.post("/login", async (req, res) => {
     // Enviar código por correo
     await enviarCodigo(usuario.correo, codigo);
 
-    // Respuesta al frontend
+    // Devolver información del usuario también
     res.json({
       message: "Código enviado al correo",
       requires2FA: true,
+      user: {  // ← ESTO ES LO QUE FALTABA
+        _id: usuario._id,
+        correo: usuario.correo,
+        nombre: usuario.nombre,
+        rol: usuario.rol
+      }
     });
   } catch (error) {
     console.error("Error en login:", error);

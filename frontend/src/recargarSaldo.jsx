@@ -1,14 +1,36 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 import "../CSS/Modulo_RecargarSaldo.css"
 
-function RecargarSaldo() {
+function RecargarSaldo({ user }) {
   const navigate = useNavigate()
   const [datosRecarga, setDatosRecarga] = useState({
     monto: '',
     metodoPago: 'transferencia',
     concepto: ''
   })
+  const [cargando, setCargando] = useState(false)
+  const [saldoActual, setSaldoActual] = useState(0)
+  const [cargandoSaldo, setCargandoSaldo] = useState(true)
+
+  // Obtener saldo actual
+  useEffect(() => {
+    const obtenerSaldo = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/api/transacciones/saldo/${user._id}`)
+        setSaldoActual(response.data.saldo)
+      } catch (error) {
+        console.error('Error obteniendo saldo:', error)
+      } finally {
+        setCargandoSaldo(false)
+      }
+    }
+
+    if (user?._id) {
+      obtenerSaldo()
+    }
+  }, [user?._id])
 
   const handleChange = (e) => {
     setDatosRecarga({
@@ -17,30 +39,73 @@ function RecargarSaldo() {
     })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('Datos de recarga:', datosRecarga)
-    alert(`Recarga de $${datosRecarga.monto} realizada con exito a tu cuenta`)
     
-    // Limpiar formulario
-    setDatosRecarga({
-      monto: '',
-      metodoPago: 'transferencia',
-      concepto: ''
-    })
+    if (!datosRecarga.monto) {
+      alert('❌ Error: Ingrese un monto');
+      return;
+    }
+
+    const montoNumerico = parseFloat(datosRecarga.monto);
+    if (isNaN(montoNumerico) || montoNumerico < 10000) {
+      alert('❌ Error: Monto mínimo $10,000');
+      return;
+    }
+
+    setCargando(true)
+    
+    try {
+      const requestData = {
+        userId: user._id.toString(),
+        monto: montoNumerico,
+        metodoPago: datosRecarga.metodoPago,
+        concepto: datosRecarga.concepto || 'Recarga de saldo'
+      };
+
+      const response = await axios.post(
+        'http://localhost:3000/api/transacciones/recargar-saldo', 
+        requestData
+      );
+
+      if (response.data.success) {
+        setSaldoActual(response.data.nuevoSaldo) // Actualizar saldo en tiempo real
+        alert(`✅ Recarga exitosa! Nuevo saldo: $${response.data.nuevoSaldo.toLocaleString()}`)
+        setDatosRecarga({ monto: '', metodoPago: 'transferencia', concepto: '' })
+      }
+    } catch (error) {
+      alert(`❌ Error: ${error.response?.data?.message || error.message}`);
+    } finally {
+      setCargando(false)
+    }
   }
 
   const volverAlDashboard = () => {
     navigate('/dashboardCliente')
   }
 
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP'
+    }).format(amount);
+  }
+
   return (
     <div className="recargar-saldo-container">
       <header className="recargar-saldo-header">
         <button className="volver-button" onClick={volverAlDashboard}>
-          Volver al Dashboard
+          ← Volver al Dashboard
         </button>
         <h1 className="recargar-saldo-title">Recargar Saldo</h1>
+        
+        {/* Saldo actual */}
+        <div className="saldo-actual">
+          <span className="saldo-label">Saldo actual:</span>
+          <span className="saldo-monto">
+            {cargandoSaldo ? 'Cargando...' : formatCurrency(saldoActual)}
+          </span>
+        </div>
       </header>
       
       <div className="recargar-saldo-form-container">
@@ -56,14 +121,14 @@ function RecargarSaldo() {
               onChange={handleChange}
               placeholder="Ingrese el monto a recargar"
               required
-              min="1"
+              min="10000"
               className="form-input"
             />
           </div>
 
           <div className="form-group">
             <label className="form-label">
-              Metodo de Pago:
+              Método de Pago:
             </label>
             <select
               name="metodoPago"
@@ -72,9 +137,9 @@ function RecargarSaldo() {
               className="form-select"
             >
               <option value="transferencia">Transferencia Bancaria</option>
-              <option value="tarjeta">Tarjeta Debito/Credito</option>
+              <option value="tarjeta">Tarjeta Débito/Crédito</option>
               <option value="efectivo">Pago en Efectivo</option>
-              <option value="billetera">Nequi</option>
+              <option value="billetera">Billetera Digital</option>
             </select>
           </div>
 
@@ -86,7 +151,7 @@ function RecargarSaldo() {
               name="concepto"
               value={datosRecarga.concepto}
               onChange={handleChange}
-              placeholder="Descripcion de la recarga (opcional)"
+              placeholder="Descripción de la recarga (opcional)"
               rows="3"
               className="form-textarea"
             />
@@ -97,54 +162,30 @@ function RecargarSaldo() {
               type="button"
               className="cancelar-button"
               onClick={volverAlDashboard}
+              disabled={cargando}
             >
               Cancelar
             </button>
             <button
               type="submit"
               className="recargar-button"
+              disabled={cargando}
             >
-              Realizar Recarga
+              {cargando ? 'Procesando...' : 'Realizar Recarga'}
             </button>
           </div>
         </form>
       </div>
 
       <div className="recargar-saldo-info">
-        <h3 className="info-title">Informacion Importante:</h3>
+        <h3 className="info-title">Información Importante:</h3>
         <ul className="info-list">
-          <li>Las recargas se procesan en un maximo de 24 horas</li>
+          <li>Las recargas se procesan en un máximo de 24 horas</li>
           <li>El saldo se añadirá automáticamente a tu cuenta</li>
           <li>Monto mínimo de recarga: $10.000</li>
           <li>Monto máximo por recarga: $5'000.000</li>
-          <li>Comisiones pueden aplicar segun el método de pago</li>
+          <li>Comisiones pueden aplicar según el método de pago</li>
         </ul>
-      </div>
-
-      <div className="metodos-pago-info">
-        <h3 className="metodos-title">Metodos de Pago Disponibles:</h3>
-        <div className="metodos-grid">
-          <div className="metodo-item">
-            <div className="metodo-icon">🏦</div>
-            <span className="metodo-nombre">Transferencia</span>
-            <span className="metodo-comision">Sin comision</span>
-          </div>
-          <div className="metodo-item">
-            <div className="metodo-icon">💳</div>
-            <span className="metodo-nombre">Tarjeta</span>
-            <span className="metodo-comision">1.5% comision</span>
-          </div>
-          <div className="metodo-item">
-            <div className="metodo-icon">💰</div>
-            <span className="metodo-nombre">Efectivo</span>
-            <span className="metodo-comision">$2.000 comision</span>
-          </div>
-          <div className="metodo-item">
-            <div className="metodo-icon">📱</div>
-            <span className="metodo-nombre">Nequi</span>
-            <span className="metodo-comision">1% comision</span>
-          </div>
-        </div>
       </div>
     </div>
   )
