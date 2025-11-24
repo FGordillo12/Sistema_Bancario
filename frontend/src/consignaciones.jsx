@@ -56,7 +56,7 @@ function Consignaciones() {
               name="numeroCuenta"
               value={datosConsignacion.numeroCuenta}
               onChange={handleChange}
-              placeholder="Ingrese el número de cuenta"
+              placeholder="Ingrese el numero de cuenta"
               required
               className="form-input"
             />
@@ -101,7 +101,7 @@ function Consignaciones() {
               name="concepto"
               value={datosConsignacion.concepto}
               onChange={handleChange}
-              placeholder="Descripción de la consignación"
+              placeholder="Descripcion de la consignacion"
               rows="3"
               className="form-textarea"
             />
@@ -119,18 +119,18 @@ function Consignaciones() {
               type="submit"
               className="consignaciones-button"
             >
-              Realizar Consignación
+              Realizar Consignacion
             </button>
           </div>
         </form>
       </div>
 
       <div className="consignaciones-info">
-        <h3 className="info-title">Información Importante:</h3>
+        <h3 className="info-title">Informacion Importante:</h3>
         <ul className="info-list">
           <li>Las consignaciones se procesan inmediatamente</li>
-          <li>Verifique bien el número de cuenta destino</li>
-          <li>Monto mínimo de consignación: $1.000</li>
+          <li>Verifique bien el numero de cuenta destino</li>
+          <li>Monto minimo de consignacion: $1.000</li>
           <li>Horario de procesamiento: 24/7</li>
         </ul>
       </div>
