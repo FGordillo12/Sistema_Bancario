@@ -29,7 +29,7 @@ function RecargarSaldo({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
 
     const montoNumerico = parseFloat(datosRecarga.monto);
     if (isNaN(montoNumerico) || montoNumerico < 10000) {
-      alert('❌ Error: Monto mínimo $10,000');
+      alert('❌ Error: Monto minimo $10,000');
       return;
     }
 
@@ -76,7 +76,7 @@ function RecargarSaldo({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
     <div className="recargar-saldo-container">
       <header className="recargar-saldo-header">
         <button className="volver-button" onClick={volverAlDashboard}>
-          ← Volver al Dashboard
+          Volver al Dashboard
         </button>
         <h1 className="recargar-saldo-title">Recargar Saldo</h1>
         
@@ -109,7 +109,7 @@ function RecargarSaldo({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
 
           <div className="form-group">
             <label className="form-label">
-              Método de Pago:
+              Metodo de Pago:
             </label>
             <select
               name="metodoPago"
@@ -118,9 +118,9 @@ function RecargarSaldo({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
               className="form-select"
             >
               <option value="transferencia">Transferencia Bancaria</option>
-              <option value="tarjeta">Tarjeta Débito/Crédito</option>
+              <option value="tarjeta">Tarjeta Debito/Credito</option>
               <option value="efectivo">Pago en Efectivo</option>
-              <option value="billetera">Billetera Digital</option>
+              <option value="billetera">Nequi</option>
             </select>
           </div>
 
@@ -132,7 +132,7 @@ function RecargarSaldo({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
               name="concepto"
               value={datosRecarga.concepto}
               onChange={handleChange}
-              placeholder="Descripción de la recarga (opcional)"
+              placeholder="Descripcion de la recarga (opcional)"
               rows="3"
               className="form-textarea"
             />
@@ -162,10 +162,10 @@ function RecargarSaldo({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
         <h3 className="info-title">Información Importante:</h3>
         <ul className="info-list">
           <li>Las recargas se procesan en un máximo de 24 horas</li>
-          <li>El saldo se añadirá automáticamente a tu cuenta</li>
-          <li>Monto mínimo de recarga: $10.000</li>
-          <li>Monto máximo por recarga: $5'000.000</li>
-          <li>Comisiones pueden aplicar según el método de pago</li>
+          <li>El saldo se añadira automáticamente a tu cuenta</li>
+          <li>Monto minimo de recarga: $10.000</li>
+          <li>Monto maximo por recarga: $5'000.000</li>
+          <li>Comisiones pueden aplicar según el metodo de pago</li>
         </ul>
       </div>
     </div>

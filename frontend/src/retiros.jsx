@@ -74,7 +74,7 @@ function Retiros({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
     <div className="retiros-container">
       <header className="retiros-header">
         <button className="volver-button" onClick={volverAlDashboard}>
-          ← Volver al Dashboard
+          Volver al Dashboard
         </button>
         <h1 className="retiros-title">Retiros</h1>
         
@@ -140,26 +140,26 @@ function Retiros({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
       </div>
 
       <div className="retiros-info">
-        <h3 className="info-title">Información Importante:</h3>
+        <h3 className="info-title">Informacion Importante:</h3>
         <ul className="info-list">
           <li>Los retiros se procesan inmediatamente</li>
           <li>Verifique que tenga saldo suficiente en su cuenta</li>
-          <li>Monto mínimo de retiro: $10.000</li>
-          <li>Monto máximo por transacción: $2'000.000</li>
+          <li>Monto minimo de retiro: $10.000</li>
+          <li>Monto maximo por transaccion: $2'000.000</li>
           <li>Horario de procesamiento: 24/7</li>
         </ul>
       </div>
 
       <div className="retiros-limites">
-        <h3 className="limites-title">Límites Diarios de Retiro:</h3>
+        <h3 className="limites-title">Limites Diarios de Retiro:</h3>
         <div className="limites-grid">
           <div className="limite-item">
-            <span className="limite-tipo">Máximo por día</span>
+            <span className="limite-tipo">Maximo por dia</span>
             <span className="limite-monto">$5'000.000</span>
           </div>
           <div className="limite-item">
-            <span className="limite-tipo">Transacciones máx.</span>
-            <span className="limite-monto">3 por día</span>
+            <span className="limite-tipo">Transacciones maximas</span>
+            <span className="limite-monto">3 por dia</span>
           </div>
         </div>
       </div>

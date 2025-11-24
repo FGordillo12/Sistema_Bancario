@@ -81,7 +81,7 @@ function Consignaciones({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
     <div className="consignaciones-container">
       <header className="consignaciones-header">
         <button className="volver-button" onClick={volverAlDashboard}>
-          ← Volver al Dashboard
+          Volver al Dashboard
         </button>
         <h1 className="consignaciones-title">Consignaciones</h1>
         
@@ -98,14 +98,14 @@ function Consignaciones({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
         <form onSubmit={handleSubmit} className="consignaciones-form">
           <div className="form-group">
             <label className="form-label">
-              Número de Cuenta Destino:
+              Numero de Cuenta Destino:
             </label>
             <input
               type="text"
               name="numeroCuenta"
               value={datosConsignacion.numeroCuenta}
               onChange={handleChange}
-              placeholder="Ingrese el número de cuenta destino"
+              placeholder="Ingrese el numero de cuenta destino"
               required
               className="form-input"
             />
@@ -135,7 +135,7 @@ function Consignaciones({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
               name="concepto"
               value={datosConsignacion.concepto}
               onChange={handleChange}
-              placeholder="Descripción de la consignación"
+              placeholder="Descripcion de la consignacion"
               rows="3"
               className="form-textarea"
             />
@@ -155,19 +155,19 @@ function Consignaciones({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
               className="consignaciones-button"
               disabled={cargando}
             >
-              {cargando ? 'Procesando...' : 'Realizar Consignación'}
+              {cargando ? 'Procesando...' : 'Realizar Consignacion'}
             </button>
           </div>
         </form>
       </div>
 
       <div className="consignaciones-info">
-        <h3 className="info-title">Información Importante:</h3>
+        <h3 className="info-title">Informacion Importante:</h3>
         <ul className="info-list">
           <li>Las consignaciones se procesan inmediatamente</li>
-          <li>Verifique bien el número de cuenta destino</li>
-          <li>Monto mínimo de consignación: $1.000</li>
-          <li>Monto máximo por transacción: $10'000.000</li>
+          <li>Verifique bien el numero de cuenta destino</li>
+          <li>Monto minimo de consignacion: $1.000</li>
+          <li>Monto maximo por transaccion: $10'000.000</li>
           <li>Horario de procesamiento: 24/7</li>
           <li>Se requiere saldo suficiente en su cuenta</li>
         </ul>

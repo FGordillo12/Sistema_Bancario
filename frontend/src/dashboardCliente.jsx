@@ -36,7 +36,7 @@ function Dashboard({ user, onLogout }) {
 
               <div className='contenido' onClick={ () => navigate ('/verificarSaldo')}>
                 <img src = "/IMAGENES/aprobar-banca.png"/>
-                <h2>Verificar Saldo</h2>
+                <h2>Estado Cuenta</h2>
               </div>
 
               <div className='contenido' onClick={ () => navigate ('/recargarSaldo')}>
