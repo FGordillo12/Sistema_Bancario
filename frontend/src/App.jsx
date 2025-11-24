@@ -11,40 +11,66 @@ import Consignaciones from './consignaciones.jsx'
 import Retiros from './retiros.jsx'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import RecargarSaldo from './recargarSaldo.jsx'
+import axios from 'axios'
 
 function App() {
   const [user, setUser] = useState(null);
+  const [saldoGlobal, setSaldoGlobal] = useState(0);
+  const [cargandoSaldo, setCargandoSaldo] = useState(false);
 
   useEffect(() => {
     const usuarioGuardado = localStorage.getItem('user');
     if (usuarioGuardado) {
-        setUser(JSON.parse(usuarioGuardado));
+      const usuario = JSON.parse(usuarioGuardado);
+      setUser(usuario);
+      // Obtener saldo actual cuando hay usuario
+      if (usuario._id) {
+        obtenerSaldoActual(usuario._id);
       }
-    }, []);
+    }
+  }, []);
 
+  const obtenerSaldoActual = async (userId) => {
+    try {
+      setCargandoSaldo(true);
+      const response = await axios.get(`http://localhost:3000/api/transacciones/saldo/${userId}`);
+      setSaldoGlobal(response.data.saldo);
+    } catch (error) {
+      console.error('Error obteniendo saldo:', error);
+    } finally {
+      setCargandoSaldo(false);
+    }
+  };
+
+  const actualizarSaldoGlobal = (nuevoSaldo) => {
+    setSaldoGlobal(nuevoSaldo);
+  };
 
   const handleLogin = (usuario) => {
     setUser(usuario);
     localStorage.setItem('user', JSON.stringify(usuario));
-  };
-  const handleLogout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
+    // Obtener saldo después del login
+    if (usuario._id) {
+      obtenerSaldoActual(usuario._id);
+    }
   };
 
+  const handleLogout = () => {
+    setUser(null);
+    setSaldoGlobal(0);
+    localStorage.removeItem('user');
+  };
 
   return (
     <Router>
       <Routes>
         <Route path="/" element={<PaginaPrincipal />} />
 
-        {/* Enviamos onLogin para guardar usuario en App */}
         <Route 
           path="/login" 
           element={<Login onLogin={handleLogin} />} 
         />
 
-        {/* Protegemos Dashboard con user */}
         <Route 
           path="/dashboard" 
           element={
@@ -56,12 +82,16 @@ function App() {
           } 
         />
 
-        {/* Protegemos DashboardCliente con user */}
         <Route 
           path="/dashboardCliente" 
           element={
             user && user.correo ? (
-                <DashboardCliente user={user} onLogout={handleLogout} />
+                <DashboardCliente 
+                  user={user} 
+                  onLogout={handleLogout} 
+                  saldoGlobal={saldoGlobal}
+                  cargandoSaldo={cargandoSaldo}
+                />
             ) : (
                 <h2>No estás autenticado</h2>
             )
@@ -72,18 +102,33 @@ function App() {
         <Route path ="/crear_cliente" element =  {<Cuenta/>}/>
         <Route path ="/productos_cliente" element =  {<Productos/>}/>
         
-        {/* PASAMOS USER COMO PROP A LAS TRANSACCIONES */}
+        {/* PASAMOS SALDO GLOBAL Y FUNCIÓN PARA ACTUALIZAR */}
         <Route path='/verificarSaldo' element = {
           user ? <VerificarSaldo user={user} /> : <h2>No estas autenticado</h2>
         }/>
         <Route path='/consignaciones' element = {
-          user ? <Consignaciones user={user} /> : <h2>No estas autenticado</h2>
+          user ? <Consignaciones 
+            user={user} 
+            saldoGlobal={saldoGlobal}
+            actualizarSaldo={actualizarSaldoGlobal}
+            cargandoSaldo={cargandoSaldo}
+          /> : <h2>No estas autenticado</h2>
         }/>
         <Route path='/retiros' element = {
-          user ? <Retiros user={user} /> : <h2>No estas autenticado</h2>
+          user ? <Retiros 
+            user={user} 
+            saldoGlobal={saldoGlobal}
+            actualizarSaldo={actualizarSaldoGlobal}
+            cargandoSaldo={cargandoSaldo}
+          /> : <h2>No estas autenticado</h2>
         }/>
         <Route path='/recargarSaldo' element = {
-          user ? <RecargarSaldo user={user} /> : <h2>No estas autenticado</h2>
+          user ? <RecargarSaldo 
+            user={user} 
+            saldoGlobal={saldoGlobal}
+            actualizarSaldo={actualizarSaldoGlobal}
+            cargandoSaldo={cargandoSaldo}
+          /> : <h2>No estas autenticado</h2>
         }/>
 
       </Routes>

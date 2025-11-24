@@ -1,35 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import "../CSS/Modulo_Retiros.css"
 
-function Retiros({ user }) {
+function Retiros({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
   const navigate = useNavigate()
   const [datosRetiro, setDatosRetiro] = useState({
     monto: '',
     concepto: ''
   })
   const [cargando, setCargando] = useState(false)
-  const [saldoActual, setSaldoActual] = useState(0)
-  const [cargandoSaldo, setCargandoSaldo] = useState(true)
-
-  // Obtener saldo actual
-  useEffect(() => {
-    const obtenerSaldo = async () => {
-      try {
-        const response = await axios.get(`http://localhost:3000/api/transacciones/saldo/${user._id}`)
-        setSaldoActual(response.data.saldo)
-      } catch (error) {
-        console.error('Error obteniendo saldo:', error)
-      } finally {
-        setCargandoSaldo(false)
-      }
-    }
-
-    if (user?._id) {
-      obtenerSaldo()
-    }
-  }, [user?._id])
 
   const handleChange = (e) => {
     setDatosRetiro({
@@ -67,7 +47,8 @@ function Retiros({ user }) {
       );
 
       if (response.data.success) {
-        setSaldoActual(response.data.nuevoSaldo) // Actualizar saldo en tiempo real
+        // ✅ Actualizar el saldo global en App.jsx
+        actualizarSaldo(response.data.nuevoSaldo);
         alert(`✅ Retiro exitoso! Nuevo saldo: $${response.data.nuevoSaldo.toLocaleString()}`)
         setDatosRetiro({ monto: '', concepto: '' })
       }
@@ -97,11 +78,11 @@ function Retiros({ user }) {
         </button>
         <h1 className="retiros-title">Retiros</h1>
         
-        {/* Saldo actual */}
+        {/* Saldo actual desde props globales */}
         <div className="saldo-actual">
           <span className="saldo-label">Saldo actual:</span>
           <span className="saldo-monto">
-            {cargandoSaldo ? 'Cargando...' : formatCurrency(saldoActual)}
+            {cargandoSaldo ? 'Cargando...' : formatCurrency(saldoGlobal)}
           </span>
         </div>
       </header>

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import "../CSS/Modulo_Consignaciones.css";
 
-function Consignaciones({ user }) {
+function Consignaciones({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
   const navigate = useNavigate()
   const [datosConsignacion, setDatosConsignacion] = useState({
     numeroCuenta: '',
@@ -11,26 +11,6 @@ function Consignaciones({ user }) {
     concepto: ''
   })
   const [cargando, setCargando] = useState(false)
-  const [saldoActual, setSaldoActual] = useState(0)
-  const [cargandoSaldo, setCargandoSaldo] = useState(true)
-
-  // Obtener saldo actual
-  useEffect(() => {
-    const obtenerSaldo = async () => {
-      try {
-        const response = await axios.get(`http://localhost:3000/api/transacciones/saldo/${user._id}`)
-        setSaldoActual(response.data.saldo)
-      } catch (error) {
-        console.error('Error obteniendo saldo:', error)
-      } finally {
-        setCargandoSaldo(false)
-      }
-    }
-
-    if (user?._id) {
-      obtenerSaldo()
-    }
-  }, [user?._id])
 
   const handleChange = (e) => {
     setDatosConsignacion({
@@ -74,7 +54,8 @@ function Consignaciones({ user }) {
       );
 
       if (response.data.success) {
-        setSaldoActual(response.data.nuevoSaldo) // Actualizar saldo en tiempo real
+        // ✅ Actualizar el saldo global en App.jsx
+        actualizarSaldo(response.data.nuevoSaldo);
         alert(`✅ Consignación exitosa a la cuenta ${datosConsignacion.numeroCuenta}! Nuevo saldo: $${response.data.nuevoSaldo.toLocaleString()}`)
         setDatosConsignacion({ numeroCuenta: '', monto: '', concepto: '' })
       }
@@ -104,11 +85,11 @@ function Consignaciones({ user }) {
         </button>
         <h1 className="consignaciones-title">Consignaciones</h1>
         
-        {/* Saldo actual */}
+        {/* Saldo actual desde props globales */}
         <div className="saldo-actual">
           <span className="saldo-label">Saldo actual:</span>
           <span className="saldo-monto">
-            {cargandoSaldo ? 'Cargando...' : formatCurrency(saldoActual)}
+            {cargandoSaldo ? 'Cargando...' : formatCurrency(saldoGlobal)}
           </span>
         </div>
       </header>
