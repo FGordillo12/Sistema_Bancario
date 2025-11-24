@@ -316,7 +316,7 @@ function EstadoCuenta({ user, saldoGlobal }) {
               </span>
             </div>
             <div className="resumen-item saldo-final">
-              <span className="resumen-label">Saldo Final:</span>
+              <span className="resumen-label">Saldo Final :</span>
               <span className="resumen-monto final">
                 {formatCurrency(resumen.saldoFinal)}
               </span>
