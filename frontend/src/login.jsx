@@ -7,7 +7,7 @@ const Login = ({ onLogin }) => {
   const [Codigo, setCodigo] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [requires2FA, setRequires2FA] = useState(false);
-  const [userTemp, setUserTemp] = useState(null); // Para guardar el user temporalmente
+  const [userTemp, setUserTemp] = useState(null);
 
   const navigate = useNavigate();
 
@@ -25,15 +25,12 @@ const Login = ({ onLogin }) => {
 
         const data = await respuesta.json();
 
-        console.log("🔍 Respuesta del login:", data); // Debug
-
         if (respuesta.ok && data.requires2FA) {
           setRequires2FA(true);
           setMensaje("Se envió un código a tu correo");
-          // ✅ Guardar el user temporalmente para usarlo después
+          // Guardar el user temporalmente para usarlo después
           if (data.user) {
             setUserTemp(data.user);
-            console.log("🔍 User temporal guardado:", data.user);
           }
         } else if (respuesta.ok && data.usuario) {
           onLogin(data.usuario);
@@ -46,7 +43,6 @@ const Login = ({ onLogin }) => {
           setMensaje(data.message || "Error en login");
         }
       } catch (error) {
-        console.error("Error en login:", error);
         setMensaje("Error de servidor");
       }
     } else {
@@ -60,23 +56,18 @@ const Login = ({ onLogin }) => {
 
         const data = await respuesta.json();
 
-        console.log("🔍 Respuesta del verify-2fa:", data); // Debug
-
         if (!respuesta.ok) {
-          console.error("Error de backend:", data);
           setMensaje(data.message || "Error en verificación 2FA");
           return;
         }
 
         setMensaje("Login completo!");
         
-        // ✅ CORREGIDO: Usar el user del backend O el temporal
+        // Usar el user del backend O el temporal
         const usuarioCompleto = data.user || userTemp || { 
           correo: Correo, 
           _id: userTemp?._id 
         };
-        
-        console.log("🔍 Usuario que se guardará:", usuarioCompleto);
         
         onLogin(usuarioCompleto);
         
@@ -86,7 +77,6 @@ const Login = ({ onLogin }) => {
           navigate("/dashboardCliente");
         }
       } catch (error) {
-        console.error("Error en fetch verify-2fa:", error);
         setMensaje("Error de conexión al servidor");
       }
     }
@@ -132,19 +122,6 @@ const Login = ({ onLogin }) => {
             </button>
           </form>
           {mensaje && <p>{mensaje}</p>}
-          
-          {/* Debug info */}
-          {userTemp && (
-            <div style={{ 
-              backgroundColor: '#f8f9fa', 
-              padding: '10px', 
-              marginTop: '10px',
-              borderRadius: '5px',
-              fontSize: '12px'
-            }}>
-              <strong>Debug:</strong> UserTemp ID: {userTemp._id}
-            </div>
-          )}
         </div>
       </div>
     </main>
