@@ -5,7 +5,6 @@ import "../CSS/Modulo_RecargarSaldo.css"
 function RecargarSaldo() {
   const navigate = useNavigate()
   const [datosRecarga, setDatosRecarga] = useState({
-    numeroCuenta: '',
     monto: '',
     metodoPago: 'transferencia',
     concepto: ''
@@ -21,11 +20,10 @@ function RecargarSaldo() {
   const handleSubmit = (e) => {
     e.preventDefault()
     console.log('Datos de recarga:', datosRecarga)
-    alert(`Recarga de $${datosRecarga.monto} a la cuenta ${datosRecarga.numeroCuenta} realizada con éxito`)
+    alert(`Recarga de $${datosRecarga.monto} realizada con exito a tu cuenta`)
     
     // Limpiar formulario
     setDatosRecarga({
-      numeroCuenta: '',
       monto: '',
       metodoPago: 'transferencia',
       concepto: ''
@@ -47,21 +45,6 @@ function RecargarSaldo() {
       
       <div className="recargar-saldo-form-container">
         <form onSubmit={handleSubmit} className="recargar-saldo-form">
-          <div className="form-group">
-            <label className="form-label">
-              Numero de Cuenta:
-            </label>
-            <input
-              type="text"
-              name="numeroCuenta"
-              value={datosRecarga.numeroCuenta}
-              onChange={handleChange}
-              placeholder="Ingrese el número de su cuenta"
-              required
-              className="form-input"
-            />
-          </div>
-
           <div className="form-group">
             <label className="form-label">
               Monto a Recargar:
@@ -131,35 +114,35 @@ function RecargarSaldo() {
         <h3 className="info-title">Informacion Importante:</h3>
         <ul className="info-list">
           <li>Las recargas se procesan en un maximo de 24 horas</li>
-          <li>Verifique bien el numero de cuenta destino</li>
-          <li>Monto minimo de recarga: $10.000</li>
-          <li>Monto maximo por recarga: $5'000.000</li>
-          <li>Comisiones pueden aplicar según el metodo de pago</li>
+          <li>El saldo se añadirá automáticamente a tu cuenta</li>
+          <li>Monto mínimo de recarga: $10.000</li>
+          <li>Monto máximo por recarga: $5'000.000</li>
+          <li>Comisiones pueden aplicar segun el método de pago</li>
         </ul>
       </div>
 
       <div className="metodos-pago-info">
-        <h3 className="metodos-title">Métodos de Pago Disponibles:</h3>
+        <h3 className="metodos-title">Metodos de Pago Disponibles:</h3>
         <div className="metodos-grid">
           <div className="metodo-item">
             <div className="metodo-icon">🏦</div>
             <span className="metodo-nombre">Transferencia</span>
-            <span className="metodo-comision">Sin comisión</span>
+            <span className="metodo-comision">Sin comision</span>
           </div>
           <div className="metodo-item">
             <div className="metodo-icon">💳</div>
             <span className="metodo-nombre">Tarjeta</span>
-            <span className="metodo-comision">1.5% comisión</span>
+            <span className="metodo-comision">1.5% comision</span>
           </div>
           <div className="metodo-item">
             <div className="metodo-icon">💰</div>
             <span className="metodo-nombre">Efectivo</span>
-            <span className="metodo-comision">$2.000 comisión</span>
+            <span className="metodo-comision">$2.000 comision</span>
           </div>
           <div className="metodo-item">
             <div className="metodo-icon">📱</div>
             <span className="metodo-nombre">Nequi</span>
-            <span className="metodo-comision">1% comisión</span>
+            <span className="metodo-comision">1% comision</span>
           </div>
         </div>
       </div>
