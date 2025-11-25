@@ -17,11 +17,17 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: [
+      "http://localhost:5173",
+      "https://fastidious-mochi-a0d711.netlify.app"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })
 );
+
+// Permitir preflight en todas las rutas
+app.options('*', cors());
 
 app.use(express.json());
 
