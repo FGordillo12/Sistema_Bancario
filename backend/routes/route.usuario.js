@@ -19,6 +19,7 @@ router.post("/registro", async (req, res) => {
       nombre,
       correo,
       contraseña: hash,
+      rol: "admin"
     });
 
     await nuevoUsuario.save();
