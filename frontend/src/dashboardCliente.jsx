@@ -7,8 +7,8 @@ function Dashboard({ user, onLogout }) {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   const cerrarSesion = () => {
-    onLogout();      // limpia el usuario
-    navigate("/");   // redirige a la ruta que quieras
+    onLogout();    
+    navigate("/"); 
   };
 
   const handleLogoutClick = () => {
@@ -26,7 +26,6 @@ function Dashboard({ user, onLogout }) {
 
   return (
     <div>
-      {/* Ventana de diálogo de confirmación */}
       {showConfirmDialog && (
         <div className="dialog-overlay">
           <div className="dialog-box">

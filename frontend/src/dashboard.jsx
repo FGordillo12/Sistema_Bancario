@@ -7,8 +7,8 @@ function Dashboard({ user, onLogout }) {
   const navigate = useNavigate();
 
   const cerrarSesion = () => {
-    onLogout();      // limpia el usuario
-    navigate("/");   // redirige a la ruta que quieras
+    onLogout();     
+    navigate("/");   
   };
 
   return (

@@ -1,74 +1,75 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import "../CSS/Modulo_Retiros.css"
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import "../CSS/Modulo_Retiros.css";
 
 function Retiros({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [datosRetiro, setDatosRetiro] = useState({
-    monto: '',
-    concepto: ''
-  })
-  const [cargando, setCargando] = useState(false)
+    monto: "",
+    concepto: "",
+  });
+  const [cargando, setCargando] = useState(false);
 
   const handleChange = (e) => {
     setDatosRetiro({
       ...datosRetiro,
-      [e.target.name]: e.target.value
-    })
-  }
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    
+    e.preventDefault();
+
     if (!datosRetiro.monto) {
-      alert('❌ Error: Ingrese un monto');
+      alert("Error: Ingrese un monto");
       return;
     }
 
     const montoNumerico = parseFloat(datosRetiro.monto);
     if (isNaN(montoNumerico) || montoNumerico < 10000) {
-      alert('❌ Error: Monto mínimo $10,000');
+      alert("Error: Monto mínimo $10,000");
       return;
     }
 
-    setCargando(true)
-    
+    setCargando(true);
+
     try {
       const requestData = {
         userId: user._id.toString(),
         monto: montoNumerico,
-        concepto: datosRetiro.concepto || 'Retiro de saldo'
+        concepto: datosRetiro.concepto || "Retiro de saldo",
       };
 
       const response = await axios.post(
-        'http://localhost:3000/api/transacciones/retirar-saldo', 
+        "http://localhost:3000/api/transacciones/retirar-saldo",
         requestData
       );
 
       if (response.data.success) {
-        // ✅ Actualizar el saldo global en App.jsx
         actualizarSaldo(response.data.nuevoSaldo);
-        alert(`✅ Retiro exitoso! Nuevo saldo: $${response.data.nuevoSaldo.toLocaleString()}`)
-        setDatosRetiro({ monto: '', concepto: '' })
+        alert(
+          `Retiro exitoso! Nuevo saldo: $${response.data.nuevoSaldo.toLocaleString()}`
+        );
+        setDatosRetiro({ monto: "", concepto: "" });
       }
     } catch (error) {
-      alert(`❌ Error: ${error.response?.data?.message || error.message}`);
+      alert(`Error: ${error.response?.data?.message || error.message}`);
     } finally {
-      setCargando(false)
+      setCargando(false);
     }
-  }
+  };
 
   const volverAlDashboard = () => {
-    navigate('/dashboardCliente')
-  }
+    navigate("/dashboardCliente");
+  };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'currency',
-      currency: 'COP'
+    return new Intl.NumberFormat("es-CO", {
+      style: "currency",
+      currency: "COP",
     }).format(amount);
-  }
+  };
 
   return (
     <div className="retiros-container">
@@ -77,22 +78,19 @@ function Retiros({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
           Volver al Dashboard
         </button>
         <h1 className="retiros-title">Retiros</h1>
-        
-        {/* Saldo actual desde props globales */}
+
         <div className="saldo-actual">
           <span className="saldo-label">Saldo actual:</span>
           <span className="saldo-monto">
-            {cargandoSaldo ? 'Cargando...' : formatCurrency(saldoGlobal)}
+            {cargandoSaldo ? "Cargando..." : formatCurrency(saldoGlobal)}
           </span>
         </div>
       </header>
-      
+
       <div className="retiros-form-container">
         <form onSubmit={handleSubmit} className="retiros-form">
           <div className="form-group">
-            <label className="form-label">
-              Monto a Retirar:
-            </label>
+            <label className="form-label">Monto a Retirar:</label>
             <input
               type="number"
               name="monto"
@@ -106,9 +104,7 @@ function Retiros({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
           </div>
 
           <div className="form-group">
-            <label className="form-label">
-              Concepto:
-            </label>
+            <label className="form-label">Concepto:</label>
             <textarea
               name="concepto"
               value={datosRetiro.concepto}
@@ -133,7 +129,7 @@ function Retiros({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
               className="retiros-button"
               disabled={cargando}
             >
-              {cargando ? 'Procesando...' : 'Realizar Retiro'}
+              {cargando ? "Procesando..." : "Realizar Retiro"}
             </button>
           </div>
         </form>
@@ -164,7 +160,7 @@ function Retiros({ user, saldoGlobal, actualizarSaldo, cargandoSaldo }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Retiros
+export default Retiros;
