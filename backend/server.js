@@ -26,8 +26,9 @@ app.use(
   })
 );
 
-// Permitir preflight en todas las rutas
+// ← ESTA LÍNEA ES CLAVE
 app.options('*', cors());
+
 
 app.use(express.json());
 
